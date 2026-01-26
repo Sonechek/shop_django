@@ -1,29 +1,112 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>{{ product.name }} ({{ product.sku }})</h2>
-<p>Категория: {{ product.category.name }}</p>
-<p>Описание: {{ product.description }}</p>
-<p>Цена: {{ product.price }}</p>
-<p>Тип: {{ product.get_product_type_display }}</p>
+<style>
+    /* Основные стили для печати */
+    @media print {
+        .no-print { display: none; }
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .product-info {
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .product-info p {
+        margin: 5px 0;
+    }
+
+    h3 {
+        margin-top: 30px;
+        color: #34495e;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #3498db;
+        color: white;
+        padding: 8px;
+        text-align: left;
+    }
+
+    td {
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    a.button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    a.button:hover {
+        background-color: #2980b9;
+    }
+</style>
+
+<div class="product-info">
+    <h2>{{ product.name }} ({{ product.sku }})</h2>
+    <p><strong>Категория:</strong> {{ product.category.name }}</p>
+    <p><strong>Описание:</strong> {{ product.description }}</p>
+    <p><strong>Цена:</strong> {{ product.price }}</p>
+    <p><strong>Тип:</strong> {{ product.get_product_type_display }}</p>
+</div>
 
 <h3>Остатки на складах</h3>
-<table border="1" cellpadding="5">
-    <tr>
-        <th>Склад</th>
-        <th>Количество</th>
-    </tr>
-    {% for stock in stocks %}
-    <tr>
-        <td>{{ stock.warehouse.name }}</td>
-        <td>{{ stock.quantity }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="2">Нет остатков</td>
-    </tr>
-    {% endfor %}
+<table>
+    <thead>
+        <tr>
+            <th>Склад</th>
+            <th>Количество</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stock in stocks %}
+        <tr>
+            <td>{{ stock.warehouse.name }}</td>
+            <td>{{ stock.quantity }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">Нет остатков</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
-<a href="{% url 'product_list' %}">Назад к списку товаров</a>
+<a href="{% url 'product_list' %}" class="button no-print">Назад к списку товаров</a>
+<button onclick="window.print()" class="button no-print">Печать</button>
+
 {% endblock %}
